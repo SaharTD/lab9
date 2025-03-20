@@ -1,0 +1,96 @@
+create database care_system
+
+
+create table users (
+id int primary key,
+full_name varchar (20) unique not null ,
+phone_number  varchar (15) unique not null,
+email varchar (25) unique not null,
+role ENUM ('parent','nanny') not null
+) ;
+
+
+create table nanny (
+id int primary key,
+user_id int not null ,
+years_of_experience int not null,
+status ENUM('available','unavailable') not null,
+gander ENUM ('female','male') not null,
+foreign key (user_id) references users (id)) ;
+
+
+create table child (
+id int primary key,
+full_name varchar (20) unique not null ,
+user_id int not null ,
+age int not null,
+special_needs ENUM('yes','no') not null,
+foreign key (user_id) references users (id)) ;
+
+#DATE - format YYYY-MM-DD
+
+create table bookings (
+id int primary key,
+child_id int not null ,
+nanny_id int not null ,
+status ENUM('completed','pending') not null,
+book_date date not null,
+foreign key (child_id) references child (id),
+foreign key (nanny_id) references nanny (id)) ;
+
+
+insert into users (id, full_name, phone_number, email, role)
+value
+
+(404,'Ahmad A','0554607799','A@.com','nanny'),
+(987,'Turki D','0554603525','Turki@.com','parent'),
+(776,'Hajer R','0554603529','H@.com','parent'),
+(334,'Noor K','0554607777','N@.com','nanny');
+
+insert into nanny(id, user_id, years_of_experience, status, gander)
+value
+(1114433,334,5,'available','female'),
+(1117799,404,2,'available','male')
+;
+
+insert into child (id, full_name, user_id, age, special_needs)
+value
+(004,'Lames D',987,5,'yes'),
+    (003,'naila D',987,2,'no'),
+(006,'Kareem R',776,7,'no')
+;
+
+
+alter table bookings
+add price int not null default 0;
+
+
+
+insert into bookings(id, child_id, nanny_id, status, book_date,price)
+ value
+(1,004,1114433,'pending','2025-03-20',1200),
+(2,006,1117799,'completed','2024-12-23',500)
+;
+
+alter table nanny change gander gender varchar(10);
+
+
+update nanny
+set years_of_experience=3
+where id=1117799;
+
+update nanny
+set status='unavailable'
+where id =1114433;
+
+update bookings
+set status='completed'
+where id =1;
+
+update users
+set phone_number=0546789327
+where id=776 ;
+
+
+delete from  users where id=776;
+delete from child where id= 003;
